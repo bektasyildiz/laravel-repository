@@ -1,0 +1,19 @@
+{
+    "name": "bektasyildiz/laravel-repository",
+    "description": "Laravel repository",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Bektasyildiz\\LaravelRepository\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Bektaş Yıldız",
+            "email": "bektasstar@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "stable"
+}
