@@ -2,7 +2,6 @@
 
 namespace Bektasyildiz\LaravelRepository\Commands;
 
-use Dotenv\Util\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
@@ -30,9 +29,10 @@ class MakeRepository extends Command
         $modelFilePath = $this->argument('modelFilePath');
         $repositoryName = $this->getRepositoryName($modelFilePath);
         $repositoryFilePath = config('laravel-respository.directory') . '/' . $repositoryName . '.php';
-        if (!File::exists($repositoryFilePath)) {
-            File::put($repositoryFilePath, $this->getFileContent($repositoryName, $modelFilePath));
+        if (File::exists($repositoryFilePath)) {
+            $this->info('Repository file already exists!');
         }
+        File::put($repositoryFilePath, $this->getFileContent($repositoryName, $modelFilePath));
     }
 
     private function getRepositoryName($modelFilePath)
@@ -42,18 +42,17 @@ class MakeRepository extends Command
 
     private function getFileContent(string $repositoryName, string $model): string
     {
+        $fileContent = File::get(__DIR__ . '/../../templates/repository.template');
         $useModel = str_replace('/', '\\', $model);
-        return '<?php
-namespace App\Repositories;
-
-use Bektasyildiz\LaravelRepository\Repositories\BaseRepository;
-use ' . $useModel . ';
-
-class ' . $repositoryName . ' extends BaseRepository {
-    public function __construct(' . last(explode('/', $model)) . ' $model)
-    {
-        parent::__construct($model);
+        $namespace = $this->directoryToNamespace(config('laravel-respository.directory'));
+        $search = ['{{ useModel }}', '{{ namespace }}', '{{ class }}'];
+        $replace = [$useModel, $namespace, $repositoryName];
+        return str_replace($search, $replace, $fileContent);
     }
-}';
+
+    private function directoryToNamespace($dir)
+    {
+        $deleteLastSlash = preg_replace('/\/$/', '', $dir);
+        return ucfirst(str_replace('/', '\\', $deleteLastSlash));
     }
 }
