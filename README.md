@@ -65,6 +65,8 @@ class ProductController extends Controller
 |    |—— Repositories
 |        |—— BaseRepository.php
 |        |—— RepositoryInterface.php
+|—— templates
+|    |—— repository.template
 ```
   
 ## License
