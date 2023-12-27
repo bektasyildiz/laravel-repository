@@ -8,7 +8,7 @@ composer required bektasyildiz/laravel-repository
 #### app/config.php add provider
 
 ```php
-Bektasyildiz\Quiz\QuizServiceProvider\LaravelRepositoryServiceProvider::class,
+Bektasyildiz\LaravelRepository\LaravelRepositoryServiceProvider::class,
 ```
 
 #### Publish config
