@@ -4,6 +4,7 @@ namespace Bektasyildiz\LaravelRepository\Repositories;
 
 use Closure;
 use Bektasyildiz\LaravelRepository\Exceptions\LaravelRepositoryException;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 
 class BaseRepository implements RepositoryInterface {
@@ -68,7 +69,10 @@ class BaseRepository implements RepositoryInterface {
      */
     public function save(array $data)
     {
-        return $this->model->fill($data)->save();
+        if (!$this->model->fill($data)->save()) {
+            throw new \Exception('DATA_COULD_NOT_BE_SAVED');
+        }
+        return $this->model;
     }
 
     /**
@@ -78,7 +82,10 @@ class BaseRepository implements RepositoryInterface {
      */
     public function updateById(int $id, array $data)
     {
-        return $this->model->query()->find($id)->fill($data)->update();
+        if ($this->model->query()->find($id)->fill($data)->update()) {
+            throw new \Exception('DATA_COULD_NOT_BE_UPDATED!');
+        }
+        return $this->model;
     }
 
     /**
