@@ -29,23 +29,28 @@ class BaseRepository implements RepositoryInterface {
      * @param string|null $orderByDirection
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function findBy(array $condition, $orderByColumn = null, string $orderByDirection = null)
+    public function findBy(array $condition, $orderByColumn = null, string $orderByDirection = null, int $perPage = null)
     {
         $this->model = $this->model->query();
         $this->applyConditions($condition);
         if ($orderByColumn) {
             $this->model = $this->model->orderBy($orderByColumn, $orderByDirection ?? 'ASC');
         }
-        return $this->model->get();
+        if (!$perPage) {
+            $data = $this->model->get();
+        } else {
+            $data = $this->model->paginate($perPage);
+        }
+        return $data;
     }
 
     /**
-     * @param int|null $paginateBy
+     * @param int|null $perPage
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function getAll(int $paginateBy = null)
+    public function getAll(int $perPage = null)
     {
-        return $paginateBy ? $this->model->query()->paginate($paginateBy) : $this->model->query()->get();
+        return $perPage ? $this->model->query()->paginate($perPage) : $this->model->query()->get();
     }
 
     /**
